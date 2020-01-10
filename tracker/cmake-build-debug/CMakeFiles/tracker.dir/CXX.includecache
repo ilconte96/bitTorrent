@@ -1,0 +1,176 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/Job.h
+thread
+-
+chrono
+-
+iostream
+-
+string
+-
+
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/MainController.h
+string
+-
+TorrentSession.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/TorrentSession.h
+Peer.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/Peer.h
+config.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/config.h
+
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/Peer.h
+string
+-
+thread
+-
+chrono
+-
+
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/RequestController.h
+MainController.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/MainController.h
+dist/json/json.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/json.h
+string
+-
+
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/TcpServer.cpp
+TcpServer.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/TcpServer.h
+
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/TcpServer.h
+RequestController.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/RequestController.h
+iostream
+-
+string
+-
+sys/socket.h
+-
+netinet/in.h
+-
+thread
+-
+unistd.h
+-
+iomanip
+-
+config.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/config.h
+
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/TorrentSession.h
+string
+-
+unordered_map
+-
+chrono
+-
+mutex
+-
+Peer.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/Peer.h
+Job.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/Job.h
+vector
+-
+
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/config.h
+
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/json.h
+cstring
+-
+memory
+-
+cstddef
+-
+cstdint
+-
+istream
+-
+memory
+-
+ostream
+-
+sstream
+-
+string
+-
+type_traits
+-
+allocator.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/allocator.h
+version.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/version.h
+config.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/config.h
+forwards.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/forwards.h
+forwards.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/forwards.h
+array
+-
+exception
+-
+map
+-
+memory
+-
+string
+-
+vector
+-
+json_features.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/json_features.h
+value.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/value.h
+deque
+-
+iosfwd
+-
+istream
+-
+stack
+-
+string
+-
+value.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/value.h
+ostream
+-
+string
+-
+vector
+-
+cstdlib
+-
+sstream
+-
+config.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/dist/json/config.h
+
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/main.cpp
+iostream
+-
+thread
+-
+vector
+-
+MainController.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/MainController.h
+RequestController.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/RequestController.h
+TcpServer.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/TcpServer.h
+signal.h
+-
+config.h
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/config.h
+

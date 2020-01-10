@@ -1,0 +1,1 @@
+/usr/bin/c++  -pthread -g   CMakeFiles/tracker.dir/main.cpp.o CMakeFiles/tracker.dir/Peer.cpp.o CMakeFiles/tracker.dir/MainController.cpp.o CMakeFiles/tracker.dir/TorrentSession.cpp.o CMakeFiles/tracker.dir/RequestController.cpp.o CMakeFiles/tracker.dir/TcpServer.cpp.o CMakeFiles/tracker.dir/Job.cpp.o CMakeFiles/tracker.dir/dist/jsoncpp.cpp.o  -o tracker 

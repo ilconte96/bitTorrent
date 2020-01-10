@@ -1,0 +1,3 @@
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/cmake-build-debug/CMakeFiles/tracker.dir
+/home/angelo1996/Documenti/Advanced Programming Languages/Project/tracker/cmake-build-debug/CMakeFiles/edit_cache.dir
