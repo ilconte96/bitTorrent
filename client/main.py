@@ -9,21 +9,20 @@ from tracker_client import TrackerClient
 from tcp_server import TcpServer
 from main_controller import MainController
 
-def parseTorrentFile(torrent_file_path):
+def parse_torrent_file(torrent_file_path):
     with open(torrent_file_path, 'r') as torrent_file:
         return json.loads(torrent_file.read())
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--file_name', type = str, required = True)
 parser.add_argument('--torrent_file_path', type = str, required = True)
 parser.add_argument('--seeder', action='store_true')
 args = parser.parse_args()
-torrent_file_data = parseTorrentFile(args.torrent_file_path)
+torrent_file_data = parse_torrent_file(args.torrent_file_path)
 
 info_hash = hashlib.sha1(json.dumps(torrent_file_data['info']).encode('utf-8')).hexdigest()
 my_id = ''.join(random.choice(string.ascii_letters + string.digits) for i in range(PEER_ID_SIZE))
 
-main_controller = MainController.start(my_id, info_hash, torrent_file_data, args.file_name, args.seeder)
+main_controller = MainController.start(my_id, info_hash, torrent_file_data, args.seeder)
         
 server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 server_socket.bind((socket.gethostname(),0))

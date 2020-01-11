@@ -15,11 +15,10 @@ logging.basicConfig(level=logging.DEBUG)
 
 class MainController(pykka.ThreadingActor):
 
-    def __init__(self, my_id, info_hash, torrent_file_data, file_name, seeder):
+    def __init__(self, my_id, info_hash, torrent_file_data, seeder):
         super().__init__()
         self.my_id = my_id
         self.info_hash = info_hash
-        self.file_name = file_name
         self.peers = {}
         self.pieces_map = PiecesMap(torrent_file_data['info']['piece_length'])
 
@@ -27,10 +26,10 @@ class MainController(pykka.ThreadingActor):
         tokens = [(hashes[i:i+40]) for i in range(0, len(hashes), 40)]
         
         if seeder is True:
-            self.file_object = FileObject(open(self.file_name,'rb'))
+            self.file_object = FileObject(open(torrent_file_data['info']['name'],'rb'))
             self.build_pieces_dict(self.pieces_map, torrent_file_data['info']['length'], torrent_file_data['info']['piece_length'], tokens, 'downloaded')
         else:
-            self.file_object = FileObject(open(self.file_name,'w+b',0))
+            self.file_object = FileObject(open(torrent_file_data['info']['name'],'w+b',0))
             self.file_object.write(torrent_file_data['info']['length']-1, b'\x00')
             self.build_pieces_dict(self.pieces_map, torrent_file_data['info']['length'], torrent_file_data['info']['piece_length'], tokens, 'missing')
             

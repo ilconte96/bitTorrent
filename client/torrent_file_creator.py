@@ -28,6 +28,7 @@ def main():
 
     data['info'] = {}
     data['info']['length'] = input_file_size
+    data['info']['name'] = os.path.basename(args.input_file_path)
 
     with open(args.input_file_path, 'rb') as input_file:
         hashes = str()
