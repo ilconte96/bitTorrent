@@ -125,8 +125,10 @@ class MainController(pykka.ThreadingActor):
         self.peers[message_body]['state'] = 'not_interested'
 
     def peer_failure(self, message_body):
+        print(f'Stopping {message_body}')
         self.peers[message_body]['actor_ref'].stop()
         del self.peers[message_body]
+        print(f'Removed {message_body}')
         if len(self.peers) == 0:
             self.timer.stop()
             
