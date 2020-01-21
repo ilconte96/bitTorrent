@@ -234,8 +234,8 @@ class Peer(pykka.ThreadingActor):
             self.pieces_map.set_piece_missing(self.requested_piece)
             self.requested_piece = None
         self.peer_connection_reader.stop()
-        self.peer_connection_reader.join()
         self.tcp_connection.close()
+        self.peer_connection_reader.join()
         print(f'Connection closed')
 
     def on_receive(self, message):

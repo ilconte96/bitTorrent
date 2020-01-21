@@ -17,14 +17,18 @@ class PeerConnectionReader(Thread):
             try:
                 self.tcp_connection.wait_readable_data()
                 message = self.tcp_connection.receive()
+                if len(message)<CODE_SIZE:
+                    raise Exception('Unexpected message')
                 self.peer.tell({
                     'header' : int.from_bytes(message[0:CODE_SIZE], byteorder='big'),
                     'body' : message[CODE_SIZE:]
                 })
             except Exception as e:
-                print(e)
-                self.peer.tell({
-                    'header' : 12,
-                    'body' : None
-                })
+                try:
+                    self.peer.tell({
+                        'header' : 12,
+                        'body' : None
+                    })
+                except Exception as e:
+                    print(e)
                 break
