@@ -177,8 +177,6 @@ class Peer(pykka.ThreadingActor):
             
             if piece['hash'] != hashlib.sha1(message_body[INDEX_SIZE:]).hexdigest():
                 print(f'Received invalid piece of index {index} from {self.id}')
-                self.pieces_map.set_piece_missing(index)
-                self.peer_connection_reader.stop()
                 self.main_controller.tell({
                     'header' : 12,
                     'body' : self.id
@@ -192,9 +190,9 @@ class Peer(pykka.ThreadingActor):
                     'body' : {'index' : index, 'peer_id' : self.id}
                 })
                 
-            self.requested_piece = None
-            if len(self.pieces_indexes_queue) == 0:
-                self.send_not_interested()
+                self.requested_piece = None
+                if len(self.pieces_indexes_queue) == 0:
+                    self.send_not_interested()
     
     def process_pieces_queue(self):
         if self.requested_piece is None:
@@ -236,8 +234,8 @@ class Peer(pykka.ThreadingActor):
             self.pieces_map.set_piece_missing(self.requested_piece)
             self.requested_piece = None
         self.peer_connection_reader.stop()
-        self.peer_connection_reader.join()
         self.tcp_connection.close()
+        self.peer_connection_reader.join()
         print(f'Connection closed')
 
     def on_receive(self, message):

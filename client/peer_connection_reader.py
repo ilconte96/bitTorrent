@@ -1,5 +1,6 @@
 from config import CODE_SIZE
 from threading import Thread
+from pykka import ActorDeadError
 
 class PeerConnectionReader(Thread):
 
@@ -29,6 +30,6 @@ class PeerConnectionReader(Thread):
                         'header' : 12,
                         'body' : None
                     })
-                except Exception as e:
+                except ActorDeadError as e:
                     print(e)
                 break
