@@ -2,6 +2,7 @@
 import pykka
 import hashlib
 import random
+import os
 import sys
 from config import CODE_SIZE, TIMER_INTERVAL, UNCHOCKED_PEERS
 from peer import Peer
@@ -26,6 +27,8 @@ class MainController(pykka.ThreadingActor):
         tokens = [(hashes[i:i+40]) for i in range(0, len(hashes), 40)]
         
         if seeder is True:
+            if not os.path.exists(torrent_file_data['info']['name']):
+                sys.exit('Input file does not exist')
             self.file_object = FileObject(open(torrent_file_data['info']['name'],'rb'))
             self.build_pieces_dict(self.pieces_map, torrent_file_data['info']['length'], torrent_file_data['info']['piece_length'], tokens, 'downloaded')
         else:

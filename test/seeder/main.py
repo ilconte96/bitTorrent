@@ -4,6 +4,8 @@ import hashlib
 import random
 import string
 import socket
+import os
+import sys
 from config import PEER_ID_SIZE
 from tracker_client import TrackerClient
 from tcp_server import TcpServer
@@ -17,6 +19,10 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--torrent_file_path', type = str, required = True)
 parser.add_argument('--seeder', action='store_true')
 args = parser.parse_args()
+
+if not os.path.exists(args.torrent_file_path):
+    sys.exit('File torrent not exists')
+
 torrent_file_data = parse_torrent_file(args.torrent_file_path)
 
 info_hash = hashlib.sha1(json.dumps(torrent_file_data['info']).encode('utf-8')).hexdigest()
