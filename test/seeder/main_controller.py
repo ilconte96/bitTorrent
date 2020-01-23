@@ -5,6 +5,7 @@ import random
 import os
 import sys
 from config import CODE_SIZE, TIMER_INTERVAL, UNCHOCKED_PEERS
+from termcolor import colored
 from peer import Peer
 from tcp_connection import TcpConnection
 from file_object import FileObject
@@ -53,7 +54,7 @@ class MainController(pykka.ThreadingActor):
                 'body' : index
             })
         if len(self.pieces_map.get_downloaded_pieces()) == self.pieces_map.get_size():
-            print('Downloaded all pieces')
+            print(colored('Downloaded all pieces','green'))
                     
     def add_peer(self, message_body):
         peer_id = message_body[0]
@@ -62,7 +63,7 @@ class MainController(pykka.ThreadingActor):
         if peer_id != self.my_id and peer_id not in self.peers:
             peer = Peer.start(peer_id, tcp_connection, self.actor_ref, self.file_object, self.pieces_map)
             self.peers[peer_id] = {'actor_ref' : peer, 'downloaded_bytes' : 0, 'state' : 'not_interested'}
-            print(f'added new peer with id: {peer_id}')
+            print(colored(f'added new peer with id: {peer_id}','yellow'))
             if len(self.peers) == 1:
                 self.timer = Timer(TIMER_INTERVAL, self.actor_ref)
                 self.timer.daemon = True
@@ -80,7 +81,7 @@ class MainController(pykka.ThreadingActor):
                     if int.from_bytes(tcp_connection.receive(), byteorder='big') == 11:
                         peer = Peer.start(peer_data['id'], tcp_connection, self.actor_ref, self.file_object, self.pieces_map)
                         self.peers[peer_data['id']] = {'actor_ref' : peer, 'downloaded_bytes' : 0, 'state' : 'not_interested'}
-                        print(f"added new peer with id: {peer_data['id']}")
+                        print(colored(f"added new peer with id: {peer_data['id']}",'yellow'))
                         if len(self.peers) == 1:
                             self.timer = Timer(TIMER_INTERVAL, self.actor_ref)
                             self.timer.daemon = True
@@ -128,10 +129,10 @@ class MainController(pykka.ThreadingActor):
         self.peers[message_body]['state'] = 'not_interested'
 
     def peer_failure(self, message_body):
-        print(f'Stopping {message_body}')
+        print(colored(f'Stopping {message_body}','red'))
         self.peers[message_body]['actor_ref'].stop()
         del self.peers[message_body]
-        print(f'Removed {message_body}')
+        print(colored(f'Removed {message_body}','red'))
         if len(self.peers) == 0:
             self.timer.stop()
             

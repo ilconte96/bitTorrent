@@ -1,5 +1,21 @@
 # BitTorrent
 
+###Dipendenze
+
+- Installare la libreria pykka con il seguente comando:
+
+```
+pip3 install pykka
+
+```
+
+- Installare la libreria termicolor con il seguente comando:
+
+```
+pip3 install termicolor
+
+``` 
+
 ### Tracker
 
 ```

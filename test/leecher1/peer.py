@@ -3,6 +3,7 @@ import hashlib
 import random
 import logging
 from config import CODE_SIZE, INDEX_SIZE
+from termcolor import colored
 from pieces_map import IsDownloadedStateException, IsRequestedStateException
 from peer_connection_reader import PeerConnectionReader
 
@@ -26,11 +27,11 @@ class Peer(pykka.ThreadingActor):
         self.send_bitfield()
     
     def choke(self, message_body):
-        print(f'Received chocke message from {self.id}')
+        print(colored(f'Received chocke message from {self.id}','red'))
         self.am_unchoked = False
 
     def unchoke(self, message_body):
-        print(f'Received unchoke message from {self.id}')
+        print(colored(f'Received unchoke message from {self.id}','green'))
         self.am_unchoked = True
         
     def send_choke(self, message_body):
@@ -39,7 +40,7 @@ class Peer(pykka.ThreadingActor):
             self.tcp_connection.send((0).to_bytes(CODE_SIZE, byteorder='big'))
         except Exception as e:
             print(e)
-            print(f'Error in sending choke to {self.id}')
+            print(colored(f'Error in sending choke to {self.id}','red'))
             pass
         
     def send_unchoke(self, message_body):
@@ -48,7 +49,7 @@ class Peer(pykka.ThreadingActor):
             self.tcp_connection.send((1).to_bytes(CODE_SIZE, byteorder='big'))
         except Exception as e:
             print(e)
-            print(f'Error in sending unchoke to {self.id}')
+            print(colored(f'Error in sending unchoke to {self.id}','red'))
             pass
     
     def interested(self, message_body):
@@ -66,42 +67,41 @@ class Peer(pykka.ThreadingActor):
     
     def send_interested(self):
         try:
-            print(f'Sending interested message to {self.id}')
+            print(colored(f'Sending interested message to {self.id}','cyan'))
             self.tcp_connection.send((2).to_bytes(CODE_SIZE, byteorder='big'))
         except Exception as e:
             print(e)
-            print(f'Error in sending interested message to {self.id}')
+            print(colored(f'Error in sending interested message to {self.id}','red'))
             pass
     
     def send_not_interested(self):
         try:
-            print(f'Sending not interested message to {self.id}')
+            print(colored(f'Sending not interested message to {self.id}','cyan'))
             self.tcp_connection.send((3).to_bytes(CODE_SIZE, byteorder='big'))
         except Exception as e:
             print(e)
-            print(f'Error in sending not interested message to {self.id}')
+            print(colored(f'Error in sending not interested message to {self.id}','red'))
             pass
     
     def have(self, message_body):
         index = int.from_bytes(message_body[0:INDEX_SIZE], byteorder='big')
-        print(f'Received have for index {index} from {self.id}')
-        if self.pieces_map.contains_piece(index) and not self.pieces_map.is_piece_downloaded(index):
+        print(colored(f'Received have for index {index} from {self.id}','cyan'))
+        if self.pieces_map.contains_piece(index) and not index in self.pieces_indexes_queue and not self.pieces_map.is_piece_downloaded(index):
             self.pieces_indexes_queue.append(index)
-            self.send_interested()
-            print(f'Added in queue piece {index} received from {self.id}')
+            if len(self.pieces_indexes_queue) == 1:
+                self.send_interested()
+            print(colored(f'Added in queue piece {index} received from {self.id}','cyan'))
         
     def send_have(self, index):
-        print('Sending have to '+self.id)
+        print(colored(f'Sending have to {self.id}','cyan'))
         try:
-            if self.requested_piece == index:
-                self.requested_piece = None
             if index in self.pieces_indexes_queue:
                 self.pieces_indexes_queue.remove(index)
+                if len(self.pieces_indexes_queue) == 0:
+                    self.send_not_interested()
             self.tcp_connection.send((4).to_bytes(CODE_SIZE, byteorder='big') + (index).to_bytes(INDEX_SIZE, byteorder='big'))
-            if len(self.pieces_indexes_queue) == 0:
-                self.send_not_interested()
         except Exception as e:
-            print(f'Error in sending have to {self.id}')
+            print(colored(f'Error in sending have to {self.id}','red'))
             print(e)
             pass
         
@@ -109,7 +109,7 @@ class Peer(pykka.ThreadingActor):
         bitfield = message_body
         for index in range(0,len(bitfield)):
             if bitfield[index] == 1:
-                if self.pieces_map.contains_piece(index) and not self.pieces_map.is_piece_downloaded(index):
+                if self.pieces_map.contains_piece(index) and not index in self.pieces_indexes_queue and not self.pieces_map.is_piece_downloaded(index):
                     self.pieces_indexes_queue.append(index)
         random.shuffle(self.pieces_indexes_queue)
         if len(self.pieces_indexes_queue) > 0:
@@ -122,11 +122,11 @@ class Peer(pykka.ThreadingActor):
                 bitfield += (1).to_bytes(1, byteorder='big')
             else:
                 bitfield += (0).to_bytes(1, byteorder='big')
-        print(f'Sending bitfield to {self.id}')
+        print(colored(f'Sending bitfield to {self.id}','cyan'))
         try:
             self.tcp_connection.send((5).to_bytes(CODE_SIZE, byteorder='big') + bitfield)
         except Exception as e:
-            print(f'Error in send bitfield to {self.id}')
+            print(colored(f'Error in send bitfield to {self.id}','red'))
             print(e)
             pass
     
@@ -134,37 +134,37 @@ class Peer(pykka.ThreadingActor):
         try:
             self.tcp_connection.send((6).to_bytes(CODE_SIZE, byteorder='big') + (index).to_bytes(INDEX_SIZE, byteorder='big'))
         except Exception as e:
-            print(f'Error in sending request of index {index} to {self.id}')
+            print(colored(f'Error in sending request of index {index} to {self.id}','red'))
             print(e)
             pass
         self.requested_piece = index
-        print(f'Requested piece with index {index} to {self.id}')
+        print(colored(f'Requested piece with index {index} to {self.id}','cyan'))
     
     def request(self, message_body):
         try:
             if self.is_unchoked is False:
-                print(f'Cannot serve request from {self.id} because this peer is unchocked')
+                print(colored(f'Cannot serve request from {self.id} because this peer is chocked','red'))
                 self.tcp_connection.send((11).to_bytes(CODE_SIZE, byteorder='big'))
             else:
                 index = int.from_bytes(message_body, byteorder='big')
                 if index not in self.pieces_map.get_downloaded_pieces():
                     self.tcp_connection.send((11).to_bytes(CODE_SIZE, byteorder='big'))
                 else:
-                    print(f'Received request for piece with index {index}')
+                    print(colored(f'Received request for piece with index {index}','cyan'))
                     self.tcp_connection.send((7).to_bytes(CODE_SIZE, byteorder='big') + (index).to_bytes(INDEX_SIZE, byteorder='big') + self.file_object.read(index * self.piece_length, self.pieces_map.get_piece(index)['length']))
         except Exception as e:
             print(e)
             pass
 
     def request_error(self, message_body):
-        print(f'Received request error message from {self.id}')
+        print(colored(f'Received request error message from {self.id}','red'))
         if self.requested_piece is not None:
             self.pieces_indexes_queue.append(self.requested_piece)
             self.pieces_map.set_piece_missing(self.requested_piece)
             self.requested_piece = None
         
     def connection_error(self, message_body):
-        print(f'Connection error with peer {self.id}')
+        print(colored(f'Connection error with peer {self.id}','red'))
         self.main_controller.tell({
             'header' : 12,
             'body' : self.id
@@ -176,13 +176,13 @@ class Peer(pykka.ThreadingActor):
             piece = self.pieces_map.get_piece(index)
             
             if piece['hash'] != hashlib.sha1(message_body[INDEX_SIZE:]).hexdigest():
-                print(f'Received invalid piece of index {index} from {self.id}')
+                print(colored(f'Received invalid piece of index {index} from {self.id}','red'))
                 self.main_controller.tell({
                     'header' : 12,
                     'body' : self.id
                 })
             else:
-                print(f'Received valid piece of index {index}')
+                print(colored(f'Received valid piece of index {index}','green'))
                 self.file_object.write(index*self.piece_length, message_body[INDEX_SIZE:])
                 self.pieces_map.set_piece_downloaded(index)
                 self.main_controller.tell({
@@ -203,9 +203,11 @@ class Peer(pykka.ThreadingActor):
                     self.send_request(index)
                 except IsRequestedStateException:
                     self.pieces_indexes_queue.append(index)
-                    print(f'Piece with index {index} just requested')
+                    print(colored(f'Piece with index {index} just requested','red'))
                 except IsDownloadedStateException:
-                    print(f'Piece with index {index} just downloaded')
+                    if len(self.pieces_indexes_queue) == 0:
+                        self.send_not_interested()
+                    print(colored(f'Piece with index {index} just downloaded','red'))
                 except Exception as e:
                     print(e)
     
@@ -236,7 +238,7 @@ class Peer(pykka.ThreadingActor):
         self.peer_connection_reader.stop()
         self.tcp_connection.close()
         self.peer_connection_reader.join()
-        print(f'Connection closed')
+        print(colored(f'Connection closed','red'))
 
     def on_receive(self, message):
         message_header = message['header']
