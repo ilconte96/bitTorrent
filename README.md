@@ -1,6 +1,6 @@
 # BitTorrent
 
-###Dipendenze
+### Dipendenze
 
 - Installare la libreria pykka con il seguente comando:
 
