@@ -20,9 +20,6 @@ class TcpServer(Thread):
         if handshake_code != 19:
             return (False, None)
         
-        if len(message)<(CODE_SIZE+60):
-            return (False, None)
-
         info_hash = message[CODE_SIZE:CODE_SIZE+40].decode('utf-8')
         
         if info_hash != self.info_hash:
