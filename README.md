@@ -84,7 +84,7 @@ python3 main.py --torrent_file_path example.torrent --seeder
 
 ```
 
-- Avviare ciascun leecher dopo aver copiato all'interno della propria directory il file torrent creato prima
+- Avviare ciascun leecher dopo aver copiato all'interno della rispettiva directory il file torrent creato prima
 
 ```
 cd leecher1 (leecher2)
